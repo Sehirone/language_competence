@@ -1,0 +1,7 @@
+<h1>Question: {{ question.question_text }}</h1>
+<p>Answer: {{ answer.answer_text }}</p>
+{% if answer.is_correct == True %}
+    <h2>TRUE!</h2>
+{% else %}
+    <h2>FALSE</h2>
+{% endif %}
