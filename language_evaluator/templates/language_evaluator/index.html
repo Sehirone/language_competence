@@ -1,6 +1,8 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/style.css' %}">
+
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
   {% for t in user.test_set.all %}
     <p><a href="{% url 'test' t.id%}">{{ t }}</a><br></p>
   {% endfor %}

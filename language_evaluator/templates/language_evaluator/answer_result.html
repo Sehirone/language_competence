@@ -1,3 +1,6 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/style.css' %}">
+
 <h1>Question: {{ question.question_text }}</h1>
 <p>Answer: {{ answer.answer_text }}</p>
 {% if answer.is_correct == True %}
