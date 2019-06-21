@@ -43,3 +43,9 @@ class Answer(models.Model):
     def __str__(self):
         return self.answer_text
 
+
+#class Test(models.Model):
+#    #user F_KEY
+#    start_time = models.DateTimeField('start time')
+#    questions_state = models.CharField(max_length=200, blank=False)
+#    language = models.ForeignKey(Language, on_delete=models.CASCADE)

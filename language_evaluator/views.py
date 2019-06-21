@@ -1,13 +1,20 @@
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from .models import *
 from django.template import loader
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from .forms import RegisterForm
 # Create your views here.
 
 
 def index(request):
-    return HttpResponse("This is index of language_evaluator")
+    template = loader.get_template('language_evaluator/index.html')
+    context = {
+
+    }
+    return HttpResponse(template.render(context, request))
 
 
 def question(request, question_id):
@@ -48,3 +55,17 @@ def answer_result(request, question_id, answer_id):
     answer = get_object_or_404(Answer, pk=answer_id)
     return render(request, 'language_evaluator/answer_result.html', {'question': question, 'answer': answer})
 
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('index')
+    else:
+        form = RegisterForm()
+    return render(request, 'language_evaluator/register.html', {'form': form})
