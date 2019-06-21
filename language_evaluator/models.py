@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timesince import timesince
+from django.utils import timezone
 
 
 class Language(models.Model):
@@ -28,7 +30,7 @@ class Question(models.Model):
     )
 
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    question_text = models.CharField(max_length=200, blank=False, unique=True)
+    question_text = models.CharField(max_length=200, blank=False)
     competence_level = models.IntegerField(blank=False, choices=COMPETENCES)
     pub_date = models.DateTimeField('date published')
 
@@ -57,3 +59,6 @@ class Test(models.Model):
 
     def questions_state_list(self):
         return self.questions_state.split('-')
+
+    def time_left(self):
+        return timesince(self.start_time, timezone.now())

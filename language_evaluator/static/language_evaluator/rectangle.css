@@ -1,0 +1,27 @@
+.rectangle {
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+
+.green {
+  background: #88e02a;
+}
+
+.grey {
+  background: #d5dbd0;
+}
+
+.no-text {
+  font-size:0;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.chosen {
+  border: 3px solid rgb(214, 66, 125);
+}

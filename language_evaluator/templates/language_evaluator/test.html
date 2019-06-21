@@ -1,7 +1,8 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/style.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/rectangle.css' %}">
 
-<h1>{{ question.question_text }}</h1>
+<h2>{{ question.question_text }}</h2>
 <form action="{% url 'test' test.id %}" method="post">
     {% csrf_token %}
     {% for a in question.answer_set.all %}
@@ -13,6 +14,20 @@
 <form action="{% url 'test' test.id %}" method="post">
     {% csrf_token %}
     {% for state in test.questions_state_list %}
-        <input type="submit" name="q_picked" value="{{ forloop.counter0 }}">
+        {% if state|slice:"-1:" == 'T' or state|slice:"-1:" == 'F' %}
+            {% if forloop.counter0 == test.current_question %}
+                <input type="submit" class="rectangle green no-text pointer chosen" name="q_picked" value="{{ forloop.counter0 }}" >
+            {% else %}
+                <input type="submit" class="rectangle green no-text pointer" name="q_picked" value="{{ forloop.counter0 }}" >
+            {% endif %}
+        {% else %}
+            {% if forloop.counter0 == test.current_question %}
+                <input type="submit" class="rectangle grey no-text pointer chosen" name="q_picked" value="{{ forloop.counter0 }}" >
+            {% else %}
+                <input type="submit" class="rectangle grey no-text pointer" name="q_picked" value="{{ forloop.counter0 }}" >
+            {% endif %}
+        {% endif %}
     {% endfor %}
 </form>
+<br>
+<h5>Time left: {{ test.time_left }}</h5>
