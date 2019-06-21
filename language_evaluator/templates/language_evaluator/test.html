@@ -1,11 +1,12 @@
 {% load static %}
+{% load shuffle %}
 <link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/style.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/rectangle.css' %}">
 
 <h2>{{ question.question_text }}</h2>
 <form action="{% url 'test' test.id %}" method="post">
     {% csrf_token %}
-    {% for a in question.answer_set.all %}
+    {% for a in question.answer_set.all|shuffle %}
         <input type="radio" name="a" id="a{{ forloop.counter }}" value="{{ a.id }}">
         <label for="a{{ forloop.counter }}">{{ a.answer_text }}</label><br>
     {% endfor %}

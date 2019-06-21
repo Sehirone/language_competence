@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timesince import timesince
 from django.utils import timezone
+from .constants import *
 
 
 class Language(models.Model):
@@ -61,4 +62,4 @@ class Test(models.Model):
         return self.questions_state.split('-')
 
     def time_left(self):
-        return timesince(self.start_time, timezone.now())
+        return timesince(timezone.now(), self.start_time + timezone.timedelta(minutes=TIME_FOR_TEST_MINUTES))
