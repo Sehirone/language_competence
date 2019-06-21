@@ -23,8 +23,17 @@
         <th>{{ t.time_left_readable }} left</th>
         <th>None</th>
         <th>None</th>
-        <th><button>TODO</button></th>
+        <th><button>TODO</button><br><button>TODO2</button></th>
       {% endif %}
+    </tr>
+  {% endfor %}
+  {% for l in languages %}
+    <tr>
+        <th>{{ l }}</th>
+        <th>new</th>
+        <th></th>
+        <th></th>
+        <th><button>TODO</button><br><button>TODO2</button></th>
     </tr>
   {% endfor %}
   </table>

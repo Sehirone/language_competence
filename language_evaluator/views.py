@@ -11,8 +11,17 @@ from .forms import RegisterForm
 
 def index(request):
     template = loader.get_template('language_evaluator/index.html')
-    context = {
+    languages = []
+    for l in Language.objects.all():
+        found = False
+        for t in get_user(request).test_set.all():
+            if l.name == t.language.name:
+                found = True
+        if not found:
+            languages.append(l)
 
+    context = {
+        'languages': languages,
     }
     return HttpResponse(template.render(context, request))
 
