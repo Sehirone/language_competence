@@ -3,8 +3,7 @@ from .models import *
 from django.template import loader
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, authenticate, get_user
 from .forms import RegisterForm
 # Create your views here.
 
@@ -69,3 +68,31 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'language_evaluator/register.html', {'form': form})
+
+
+def test(request, test_id):
+    t = get_object_or_404(Test, pk=test_id)
+
+    if User.is_authenticated:
+        if get_user(request).get_username() == t.user.username:
+            q = get_object_or_404(Question, pk=t.questions_state_list()[t.current_question][:-1])
+            if request.method == 'POST':
+                if 'a' in request.POST:
+                    answer = get_object_or_404(Answer, pk=request.POST['a'])
+                    states = t.questions_state_list()
+                    if answer.is_correct:
+                        states[t.current_question] = states[t.current_question][:-1] + 'T'
+                    else:
+                        states[t.current_question] = states[t.current_question][:-1] + 'F'
+                    t.questions_state = '-'.join(states)
+                    t.current_question = t.current_question + 1
+                    t.save(update_fields=['current_question', 'questions_state'])
+                elif 'q_picked' in request.POST:
+                    t.current_question = request.POST['q_picked']
+                    t.save(update_fields=['current_question'])
+                return HttpResponseRedirect(reverse('test', args=(t.id, )))
+            else:
+                return render(request, 'language_evaluator/test.html', {'test': t, 'question': q})
+
+    return redirect('index')
+

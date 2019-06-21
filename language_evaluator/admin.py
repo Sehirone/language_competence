@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Question, Answer, Language
+from .models import Question, Answer, Language, Test
 
 # Register your models here.
 admin.site.register(Question)
 admin.site.register(Answer)
 admin.site.register(Language)
+admin.site.register(Test)

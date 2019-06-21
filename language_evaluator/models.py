@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Language(models.Model):
@@ -44,8 +45,15 @@ class Answer(models.Model):
         return self.answer_text
 
 
-#class Test(models.Model):
-#    #user F_KEY
-#    start_time = models.DateTimeField('start time')
-#    questions_state = models.CharField(max_length=200, blank=False)
-#    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+class Test(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_time = models.DateTimeField('start time')
+    questions_state = models.CharField(max_length=400, blank=False)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    current_question = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.language.__str__()
+
+    def questions_state_list(self):
+        return self.questions_state.split('-')

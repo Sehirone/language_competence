@@ -1,0 +1,15 @@
+<h1>{{ question.question_text }}</h1>
+<form action="{% url 'test' test.id %}" method="post">
+    {% csrf_token %}
+    {% for a in question.answer_set.all %}
+        <input type="radio" name="a" id="a{{ forloop.counter }}" value="{{ a.id }}">
+        <label for="a{{ forloop.counter }}">{{ a.answer_text }}</label><br>
+    {% endfor %}
+    <input type="submit" value="Answer">
+</form>
+<form action="{% url 'test' test.id %}" method="post">
+    {% csrf_token %}
+    {% for state in test.questions_state_list %}
+        <input type="submit" name="q_picked" value="{{ forloop.counter0 }}">
+    {% endfor %}
+</form>
