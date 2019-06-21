@@ -3,12 +3,35 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+  <table>
+    <tr>
+      <th>Language</th>
+      <th>State</th>
+      <th>Result</th>
+      <th>Next try available</th>
+      <th>Actions</th>
+    </tr>
   {% for t in user.test_set.all %}
-    <p><a href="{% url 'test' t.id%}">{{ t }}</a><br></p>
+    <tr>
+      <th><a href="{% url 'test' t.id%}">{{ t }}</a></th>
+      {% if t.is_finished %}
+        <th>finished</th>
+        <th>{{ t.result }}</th>
+        <th>TODO</th>
+        <th>TODO</th>
+      {% else %}
+        <th>{{ t.time_left_readable }} left</th>
+        <th>None</th>
+        <th>None</th>
+        <th><button>TODO</button></th>
+      {% endif %}
+    </tr>
   {% endfor %}
-  <p><a href="{% url 'logout' %}">logout</a></p>
+  </table>
+  <button><a href="{% url 'logout' %}">logout</a></button>
+
 {% else %}
   <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+  <button><a href="{% url 'login' %}">login</a></button>
 {% endif %}
 {% endblock %}

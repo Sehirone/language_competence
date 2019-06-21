@@ -54,6 +54,8 @@ class Test(models.Model):
     questions_state = models.CharField(max_length=400, blank=False)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     current_question = models.IntegerField(default=0)
+    is_finished = models.BooleanField(default=False)
+    result = models.FloatField(default=0)
 
     def __str__(self):
         return self.language.__str__()
@@ -62,4 +64,10 @@ class Test(models.Model):
         return self.questions_state.split('-')
 
     def time_left(self):
+        return (self.start_time + timezone.timedelta(minutes=TIME_FOR_TEST_MINUTES)) - timezone.now()
+
+    def time_left_readable(self):
         return timesince(timezone.now(), self.start_time + timezone.timedelta(minutes=TIME_FOR_TEST_MINUTES))
+
+    def time_since_last(self):
+        return timesince(self.start_time, timezone.now())

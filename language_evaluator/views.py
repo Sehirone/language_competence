@@ -4,6 +4,7 @@ from django.template import loader
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.contrib.auth import login, authenticate, get_user
+from .functions.test_utils import *
 from .forms import RegisterForm
 # Create your views here.
 
@@ -75,6 +76,14 @@ def test(request, test_id):
 
     if User.is_authenticated:
         if get_user(request).get_username() == t.user.username:
+            if t.time_left().total_seconds() <= 0 and not t.is_finished:
+                t.is_finished = True
+                t.result = calculate_result(t)
+                t.save(update_fields=['result', 'is_finished'])
+
+            if t.is_finished:
+                return HttpResponseRedirect(reverse('index', args=(),))
+
             q = get_object_or_404(Question, pk=t.questions_state_list()[t.current_question][:-1])
             if request.method == 'POST':
                 if 'a' in request.POST:
@@ -85,7 +94,8 @@ def test(request, test_id):
                     else:
                         states[t.current_question] = states[t.current_question][:-1] + 'F'
                     t.questions_state = '-'.join(states)
-                    t.current_question = t.current_question + 1
+                    if t.current_question + 1 < len(t.questions_state_list()):
+                        t.current_question = t.current_question + 1
                     t.save(update_fields=['current_question', 'questions_state'])
                 elif 'q_picked' in request.POST:
                     t.current_question = request.POST['q_picked']
