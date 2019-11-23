@@ -1,6 +1,8 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/style.css' %}">
 
+{% if question.image_file %}<img src="{{ question.image_file.url }}">{% endif %}
+{% if question.audio_file %}<audio controls><source src="{{ question.audio_file.url }}"> Your browser does not support the audio tag.</audio>{% endif %}
 <h1>{{ question.question_text }}</h1>
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 <form action="{% url 'answer' question.id %}" method="post">

@@ -10,8 +10,8 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [
         AnswerInLine,
     ]
-    list_display = ('question_text', 'language', 'competence_level')
-    list_filter = ['language', 'competence_level']
+    list_display = ('question_text', 'language', 'competence_level', 'answer_type')
+    list_filter = ['language', 'competence_level', 'answer_type']
 
 
 # Register your models here.
