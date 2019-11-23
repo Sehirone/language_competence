@@ -34,8 +34,8 @@
                 </tr>
             {% elif question.answer_type == 1 %}
                  <tr>
-                    <th><input type="checkbox" name="a" id="a{{ forloop.counter }}" value="{{ a.id }}"></th>
-                    <th><label for="a{{ forloop.counter }}">{{ a.answer_text }}</label></th>
+                    <th><input type="checkbox" name="m" id="m{{ forloop.counter }}" value="{{ a.id }}"></th>
+                    <th><label for="m{{ forloop.counter }}">{{ a.answer_text }}</label></th>
                 </tr>
             {% elif question.answer_type == 2 %}
                 <tr>

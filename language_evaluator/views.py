@@ -110,6 +110,29 @@ def test(request, test_id):
                     if t.current_question + 1 < len(t.questions_state_list()):
                         t.current_question = t.current_question + 1
                     t.save(update_fields=['current_question', 'questions_state'])
+                elif 'm' in request.POST:
+                    hit_count = 0
+                    miss_count = 0
+                    for q_answer in q.answer_set.all():
+                        if str(q_answer.id) in request.POST.getlist('m'):
+                            if q_answer.is_correct:
+                                hit_count += 1
+                            else:
+                                miss_count += 1
+                        else:
+                            if q_answer.is_correct:
+                                miss_count += 1
+                            else:
+                                hit_count += 1
+                    states = t.questions_state_list()
+                    if hit_count > miss_count:
+                        states[t.current_question] = states[t.current_question][:-1] + 'T'
+                    else:
+                        states[t.current_question] = states[t.current_question][:-1] + 'F'
+                    t.questions_state = '-'.join(states)
+                    if t.current_question + 1 < len(t.questions_state_list()):
+                        t.current_question = t.current_question + 1
+                    t.save(update_fields=['current_question', 'questions_state'])
                 elif 'q_picked' in request.POST:
                     t.current_question = request.POST['q_picked']
                     t.save(update_fields=['current_question'])
