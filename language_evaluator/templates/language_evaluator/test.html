@@ -15,7 +15,17 @@
                 <th>True</th>
                 <th>False</th>
             </tr>
+        {% elif question.answer_type == 3 %}
+            <input type="text" name="w" id="writing">
+        {% elif question.answer_type == 4 %}
+            <div id='result'>
+                Your text will appear here.
+            </div><br>
+            <div id='record'>
+                TODO: SPEECH-TO-TEXT
+            </div>
         {% endif %}
+
         {% for a in question.answer_set.all|shuffle %}
             {% if question.answer_type == 0 %}
                 <tr>
