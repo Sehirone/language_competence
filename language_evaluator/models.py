@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.timesince import timesince
 from django.utils import timezone
 from .constants import *
+from .validators import validate_audio_extension, validate_image_extension
 
 
 class Language(models.Model):
@@ -48,8 +49,12 @@ class Question(models.Model):
     question_text = models.CharField(max_length=200, blank=False)
     competence_level = models.IntegerField(blank=False, choices=COMPETENCES)
     answer_type = models.IntegerField(blank=False, choices=ANSWER_TYPES, default=SINGLE_ANSWER)
-    audio_file = models.FileField(blank=True, upload_to="audio")
-    image_file = models.ImageField(blank=True, upload_to="images")
+    audio_file = models.FileField(blank=True, upload_to="audio",
+                                  validators=[validate_audio_extension],
+                                  help_text='Supported extensions: .mp3')
+    image_file = models.ImageField(blank=True, upload_to="images",
+                                   validators=[validate_image_extension],
+                                   help_text='Supported extensions: .png, .jpg, .jpeg, .bmp, .gif')
 
     def __str__(self):
         return self.question_text
