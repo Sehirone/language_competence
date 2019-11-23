@@ -30,10 +30,26 @@ class Question(models.Model):
         (COMPETENCE_C2, 'C2')
     )
 
+    SINGLE_ANSWER = 0
+    MULTIPLE_ANSWER = 1
+    TRUE_FALSE_ANSWER = 2
+    WRITTEN_ANSWER = 3
+    SPOKEN_ANSWER = 4
+
+    ANSWER_TYPES = (
+        (SINGLE_ANSWER, 'Single'),
+        (MULTIPLE_ANSWER, 'Multiple'),
+        (TRUE_FALSE_ANSWER, 'True/False'),
+        (WRITTEN_ANSWER, 'Written'),
+        (SPOKEN_ANSWER, 'Spoken')
+    )
+
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=200, blank=False)
     competence_level = models.IntegerField(blank=False, choices=COMPETENCES)
-    pub_date = models.DateTimeField('date published')
+    answer_type = models.IntegerField(blank=False, choices=ANSWER_TYPES, default=SINGLE_ANSWER)
+    audio_file = models.FileField(blank=True, upload_to="audio")
+    image_file = models.ImageField(blank=True, upload_to="images")
 
     def __str__(self):
         return self.question_text
