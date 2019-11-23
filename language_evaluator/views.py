@@ -44,6 +44,7 @@ def question(request, question_id):
     return HttpResponse(template.render(context, request))
 
 
+# TODO: Remove
 def answer(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
 
@@ -61,6 +62,7 @@ def answer(request, question_id):
         return HttpResponseRedirect(reverse('answer_result', args=(question_id, selected_choice.id)))
 
 
+# TODO: Remove
 def answer_result(request, question_id, answer_id):
     question = get_object_or_404(Question, pk=question_id)
     answer = get_object_or_404(Answer, pk=answer_id)

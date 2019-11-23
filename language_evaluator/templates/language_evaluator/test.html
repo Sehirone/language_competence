@@ -3,13 +3,39 @@
 <link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/style.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/rectangle.css' %}">
 
+{% if question.image_file %}<img src="{{ question.image_file.url }}">{% endif %}
 <h2>{{ question.question_text }}</h2>
+{% if question.audio_file %}<audio controls><source src="{{ question.audio_file.url }}"> Your browser does not support the audio tag.</audio>{% endif %}
 <form action="{% url 'test' test.id %}" method="post">
     {% csrf_token %}
-    {% for a in question.answer_set.all|shuffle %}
-        <input type="radio" name="a" id="a{{ forloop.counter }}" value="{{ a.id }}">
-        <label for="a{{ forloop.counter }}">{{ a.answer_text }}</label><br>
-    {% endfor %}
+    <table>
+        {% if question.answer_type == 2 %}
+            <tr>
+                <th>Question</th>
+                <th>True</th>
+                <th>False</th>
+            </tr>
+        {% endif %}
+        {% for a in question.answer_set.all|shuffle %}
+            {% if question.answer_type == 0 %}
+                <tr>
+                    <th><input type="radio" name="a" id="a{{ forloop.counter }}" value="{{ a.id }}"></th>
+                    <th><label for="a{{ forloop.counter }}">{{ a.answer_text }}</label></th>
+                </tr>
+            {% elif question.answer_type == 1 %}
+                 <tr>
+                    <th><input type="checkbox" name="a" id="a{{ forloop.counter }}" value="{{ a.id }}"></th>
+                    <th><label for="a{{ forloop.counter }}">{{ a.answer_text }}</label></th>
+                </tr>
+            {% elif question.answer_type == 2 %}
+                <tr>
+                    <th><label for="a{{ forloop.counter }}">{{ a.answer_text }}</label></th>
+                    <th><input type="radio" name="a{{ forloop.counter }}" id="t{{ forloop.counter }}" value="T"></th>
+                    <th><input type="radio" name="a{{ forloop.counter }}" id="f{{ forloop.counter }}" value="F"></th>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
     <input type="submit" value="Answer">
 </form>
 <form action="{% url 'test' test.id %}" method="post">
