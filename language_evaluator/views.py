@@ -156,7 +156,37 @@ def test(request, test_id):
                     t.questions_state = '-'.join(states)
                     if t.current_question + 1 < len(t.questions_state_list()):
                         t.current_question = t.current_question + 1
-                    print(hit_count, miss_count)
+                    t.save(update_fields=['current_question', 'questions_state'])
+                elif 'w' in request.POST:
+                    written_answer = request.POST.__getitem__('w')
+                    written_answer_split = written_answer.split(' ')
+                    hit_count = 0
+                    miss_count = 0
+                    for q_answer in q.answer_set.all():
+                        hit_count = 0
+                        miss_count = 0
+                        q_answer_split = q_answer.answer_text.split(' ')
+                        counter = 0
+                        for word in q_answer_split:
+                            if len(written_answer_split) <= counter:
+                                miss_count += 1
+                            elif written_answer_split[counter] == word:
+                                hit_count += 1
+                            elif word == '<tag>':
+                                hit_count += 1
+                            else:
+                                miss_count += 1
+                            counter += 1
+                        if hit_count > miss_count:
+                            break
+                    states = t.questions_state_list()
+                    if hit_count > miss_count:
+                        states[t.current_question] = states[t.current_question][:-1] + 'T'
+                    else:
+                        states[t.current_question] = states[t.current_question][:-1] + 'F'
+                    t.questions_state = '-'.join(states)
+                    if t.current_question + 1 < len(t.questions_state_list()):
+                        t.current_question = t.current_question + 1
                     t.save(update_fields=['current_question', 'questions_state'])
                 elif 'q_picked' in request.POST:
                     t.current_question = request.POST['q_picked']
@@ -164,6 +194,5 @@ def test(request, test_id):
                 return HttpResponseRedirect(reverse('test', args=(t.id, )))
             else:
                 return render(request, 'language_evaluator/test.html', {'test': t, 'question': q})
-
     return redirect('index')
 
