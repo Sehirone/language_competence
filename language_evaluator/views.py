@@ -159,6 +159,8 @@ def test(request, test_id):
                     t.save(update_fields=['current_question', 'questions_state'])
                 elif 'w' in request.POST:
                     written_answer = request.POST.__getitem__('w')
+                    written_answer = written_answer.replace('.', '')
+                    written_answer = written_answer.replace(',', '')
                     written_answer_split = written_answer.split(' ')
                     hit_count = 0
                     miss_count = 0
@@ -168,6 +170,8 @@ def test(request, test_id):
                         q_answer_split = q_answer.answer_text.split(' ')
                         counter = 0
                         for word in q_answer_split:
+                            word = word.replace('.', '')
+                            word = word.replace(',', '')
                             if len(written_answer_split) <= counter:
                                 miss_count += 1
                             elif written_answer_split[counter] == word:
