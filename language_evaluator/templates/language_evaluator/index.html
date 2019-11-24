@@ -8,22 +8,27 @@
       <th>Language</th>
       <th>State</th>
       <th>Result</th>
-      <th>Next try available</th>
       <th>Actions</th>
     </tr>
   {% for t in user.test_set.all %}
     <tr>
-      <th><a href="{% url 'test' t.id%}">{{ t }}</a></th>
+      <th>{{ t }}</th>
       {% if t.is_finished %}
         <th>finished</th>
         <th>{{ t.result }}</th>
-        <th>TODO</th>
-        <th>TODO</th>
+        <th></th>
       {% else %}
         <th>{{ t.time_left_readable }} left</th>
         <th></th>
-        <th></th>
-        <th><button>TODO-CONTINUE</button><br><button>TODO2</button></th>
+        <th>
+          <form action="{% url 'test' t.id %}" method="get">
+            <button>Continue</button>
+          </form>
+          <form action="{% url 'finish' t.id %}" method="post">
+            {% csrf_token %}
+            <button>Finish</button>
+          </form>
+        </th>
       {% endif %}
     </tr>
   {% endfor %}
@@ -33,7 +38,6 @@
         <th>new</th>
         <th></th>
         <th></th>
-        <th><button>TODO</button><br><button>TODO2</button></th>
     </tr>
   {% endfor %}
   </table>

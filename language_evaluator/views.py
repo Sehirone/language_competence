@@ -84,9 +84,20 @@ def register(request):
     return render(request, 'language_evaluator/register.html', {'form': form})
 
 
+def finish(request, test_id):
+    t = get_object_or_404(Test, pk=test_id)
+    if User.is_authenticated:
+        if get_user(request).get_username() == t.user.username:
+            if not t.is_finished:
+                t.is_finished = True
+                t.result = calculate_result(t)
+                t.save(update_fields=['result', 'is_finished'])
+            if t.is_finished:
+                return HttpResponseRedirect(reverse('index', args=(),))
+
+
 def test(request, test_id):
     t = get_object_or_404(Test, pk=test_id)
-
     if User.is_authenticated:
         if get_user(request).get_username() == t.user.username:
             if t.time_left().total_seconds() <= 0 and not t.is_finished:

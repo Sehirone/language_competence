@@ -69,3 +69,8 @@
 </form>
 <br>
 <h5>Time left: {{ test.time_left_readable }}</h5>
+<a href="{% url 'index' %}">Go to homepage</a>
+<form action="{% url 'finish' test.id %}" method="post">
+    {% csrf_token %}
+    <button>Finish</button>
+</form>
