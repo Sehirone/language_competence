@@ -10,6 +10,7 @@
     {% csrf_token %}
     <table>
         {% if question.answer_type == 2 %}
+            <input type="hidden" name="tf" id="tf" value="true">
             <tr>
                 <th>Question</th>
                 <th>True</th>
@@ -40,8 +41,8 @@
             {% elif question.answer_type == 2 %}
                 <tr>
                     <th><label for="a{{ forloop.counter }}">{{ a.answer_text }}</label></th>
-                    <th><input type="radio" name="a{{ forloop.counter }}" id="t{{ forloop.counter }}" value="T"></th>
-                    <th><input type="radio" name="a{{ forloop.counter }}" id="f{{ forloop.counter }}" value="F"></th>
+                    <th><input type="radio" name="tf{{ a.id }}" id="t{{ forloop.counter }}" value="T" checked></th>
+                    <th><input type="radio" name="tf{{ a.id }}" id="f{{ forloop.counter }}" value="F"></th>
                 </tr>
             {% endif %}
         {% endfor %}
