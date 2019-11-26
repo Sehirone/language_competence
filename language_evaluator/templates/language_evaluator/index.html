@@ -12,7 +12,7 @@
     </tr>
   {% for t in user.test_set.all %}
     <tr>
-      <th>{{ t }}</th>
+      <th>{{ t.language }}</th>
       {% if t.is_finished %}
         <th>finished</th>
         <th>{{ t.result }}%</th>
