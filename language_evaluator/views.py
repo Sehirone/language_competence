@@ -99,7 +99,7 @@ def finish(request, test_id):
 def test(request, test_id):
     t = get_object_or_404(Test, pk=test_id)
     if User.is_authenticated:
-        if get_user(request).get_username() == t.user.username:
+        if get_user(request) == t.user:
             if t.time_left().total_seconds() <= 0 and not t.is_finished:
                 t.is_finished = True
                 t.result = calculate_result(t)
@@ -111,6 +111,7 @@ def test(request, test_id):
             q = get_object_or_404(Question, pk=t.questions_state_list()[t.current_question][:-1])
             if request.method == 'POST':
                 if 'a' in request.POST:
+                    # parses single answer question
                     answer = get_object_or_404(Answer, pk=request.POST['a'])
                     states = t.questions_state_list()
                     if answer.is_correct:
@@ -122,6 +123,7 @@ def test(request, test_id):
                         t.current_question = t.current_question + 1
                     t.save(update_fields=['current_question', 'questions_state'])
                 elif 'm' in request.POST:
+                    # parses multiple choice question
                     hit_count = 0
                     miss_count = 0
                     for q_answer in q.answer_set.all():
@@ -145,6 +147,7 @@ def test(request, test_id):
                         t.current_question = t.current_question + 1
                     t.save(update_fields=['current_question', 'questions_state'])
                 elif 'tf' in request.POST:
+                    # parses true/false question
                     hit_count = 0
                     miss_count = 0
                     for q_answer in q.answer_set.all():
@@ -169,6 +172,7 @@ def test(request, test_id):
                         t.current_question = t.current_question + 1
                     t.save(update_fields=['current_question', 'questions_state'])
                 elif 'w' in request.POST:
+                    # parses written input and speech to text input
                     written_answer = request.POST.__getitem__('w')
                     written_answer = written_answer.replace('.', '')
                     written_answer = written_answer.replace(',', '')
