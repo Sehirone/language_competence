@@ -32,7 +32,7 @@ class TestAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.questions_state = ""
         for q in obj.test_preset.testpresetquestion_set.all():
-            obj.questions_state += str(q.id) + "N-"
+            obj.questions_state += str(q.question.id) + "N-"
         obj.questions_state = obj.questions_state[:-1]
         obj.current_question = 0
         obj.result = 0

@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timesince import timesince
 from django.utils import timezone
-from .constants import *
 from .validators import validate_audio_extension, validate_image_extension
 
 
@@ -71,7 +70,7 @@ class Answer(models.Model):
 
 class TestPreset(models.Model):
     name = models.CharField(max_length=50, blank=False, unique=True)
-    duration = models.IntegerField(default=30, blank=False)
+    duration = models.IntegerField(default=30, blank=False, help_text='Minutes')
 
     def __str__(self):
         return self.name + " (" + str(self.duration) + "m)"
@@ -90,7 +89,7 @@ class Test(models.Model):
     current_question = models.IntegerField(default=0)
     is_finished = models.BooleanField(default=False)
     result = models.IntegerField(default=0)
-    test_preset = models.ForeignKey(TestPreset, on_delete=models.SET_NULL, null=True)
+    test_preset = models.ForeignKey(TestPreset, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username + " - " + self.language.__str__()
