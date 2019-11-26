@@ -92,3 +92,16 @@ class Test(models.Model):
 
     def time_since_last(self):
         return timesince(self.start_time, timezone.now())
+
+
+class TestPreset(models.Model):
+    name = models.CharField(max_length=50, blank=False, unique=True)
+    duration = models.IntegerField(default=30, blank=False)
+
+    def __str__(self):
+        return self.name
+
+
+class TestPresetQuestion(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    test_preset = models.ForeignKey(TestPreset, on_delete=models.CASCADE)
