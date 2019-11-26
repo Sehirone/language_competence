@@ -14,4 +14,4 @@ def calculate_result(test):
             status = 0
         result += status
         divider += (q_item.competence_level + 1)
-    return result/divider
+    return round(result/divider, 2) * 100

@@ -76,7 +76,7 @@ class Test(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     current_question = models.IntegerField(default=0)
     is_finished = models.BooleanField(default=False)
-    result = models.FloatField(default=0)
+    result = models.IntegerField(default=0)
 
     def __str__(self):
         return self.language.__str__()
