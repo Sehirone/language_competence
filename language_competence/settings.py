@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'language_evaluator.apps.LanguageEvaluatorConfig'
+    'language_evaluator.apps.LanguageEvaluatorConfig',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
