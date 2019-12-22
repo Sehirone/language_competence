@@ -3,10 +3,11 @@
 <link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/style.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'language_evaluator/rectangle.css' %}">
 
+
 {% if question.image_file %}<img src="{{ question.image_file.url }}">{% endif %}
 <h2>{{ question.question_text }}</h2>
 {% if question.audio_file %}<audio controls><source src="{{ question.audio_file.url }}"> Your browser does not support the audio tag.</audio>{% endif %}
-<form action="{% url 'test' test.id %}" method="post">
+<form action="{% url 'test' test.id %}" method="post" enctype="multipart/form-data" id="main_form">
     {% csrf_token %}
     <table>
         {% if question.answer_type == 2 %}
@@ -19,13 +20,51 @@
         {% elif question.answer_type == 3 %}
             <input type="text" name="w" id="writing">
         {% elif question.answer_type == 4 %}
-            <div id='result'>
-                Your text will appear here.
-            </div><br>
-            <input type="hidden" id="speechText" name="w">
-            <div id='record'>
-                <!--TODO: SPEECH-TO-TEXT-->
-            </div>
+            <button type="button" id="recordButton" class="button_record">RECORD</button><br>
+            <audio controls id="preview">Your browser does not support the audio tag.</audio>
+            <input type="file" name="s" id="audio_input" style="display:none;">
+            <script>
+                var recorder, gumStream;
+                var recordButton = document.getElementById("recordButton");
+                var preview = document.getElementById("preview");
+                var chunks = []
+                recordButton.addEventListener("click", toggleRecording);
+
+                function createFileList(a) {
+  a = [].slice.call(Array.isArray(a) ? a : arguments)
+  for (var c, b = c = a.length, d = !0; b-- && d;) d = a[b] instanceof File
+  if (!d) throw new TypeError('expected argument to FileList is File or array of File objects')
+  for (b = (new ClipboardEvent('')).clipboardData || new DataTransfer; c--;) b.items.add(a[c])
+  return b.files
+}
+
+                function toggleRecording() {
+                    if (recorder && recorder.state == "recording") {
+                        recorder.stop();
+                        gumStream.getAudioTracks()[0].stop();
+                        recordButton.innerHTML = "START RECORDING";
+
+                    } else {
+                        navigator.mediaDevices.getUserMedia({
+                            audio: true
+                        }).then(function(stream) {
+                            gumStream = stream;
+                            chunks = []
+                            recorder = new MediaRecorder(stream);
+                            recorder.ondataavailable = function(e) {
+                                chunks.push(e.data);
+                                var url = URL.createObjectURL(e.data);
+                                preview.src = url;
+                                var blob = new Blob(chunks);
+                                var file = new File([blob], 'audio.file')
+                                document.getElementById("audio_input").files = createFileList(file);
+                            };
+                            recorder.start();
+                            recordButton.innerHTML = "STOP RECORDING";
+                        });
+                    }
+                }
+            </script>
         {% endif %}
 
         {% for a in question.answer_set.all|shuffle %}

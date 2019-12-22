@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.contrib.auth import login, authenticate, get_user
 from .functions.test_utils import *
+from .functions.speechToText import *
 from .forms import RegisterForm
 # Create your views here.
 
@@ -130,7 +131,7 @@ def test(request, test_id):
                         t.current_question = t.current_question + 1
                     t.save(update_fields=['current_question', 'questions_state'])
                 elif 'w' in request.POST:
-                    # parses written input and speech to text input
+                    # parses written input
                     written_answer = request.POST.__getitem__('w')
                     written_answer = written_answer.replace('.', '')
                     written_answer = written_answer.replace(',', '')
@@ -165,6 +166,9 @@ def test(request, test_id):
                     if t.current_question + 1 < len(t.questions_state_list()):
                         t.current_question = t.current_question + 1
                     t.save(update_fields=['current_question', 'questions_state'])
+                elif 's' in request.FILES:
+                # parses speech input
+                    transcription = text_from_speech(request.FILES.__getitem__('s'), t.user.username)
                 elif 'q_picked' in request.POST:
                     t.current_question = request.POST['q_picked']
                     t.save(update_fields=['current_question'])
