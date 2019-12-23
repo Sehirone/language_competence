@@ -1,10 +1,17 @@
 import speech_recognition as sr
 from pydub import AudioSegment
 import shutil
+from django.conf import settings
+from os import path as p
+from os import mkdir
 
 
 def text_from_speech(file, username):
-    filename = username + '.audio'
+    uploads = '\\uploads\\'
+    path = settings.MEDIA_ROOT + uploads
+    if not p.exists(path):
+        mkdir(path)
+    filename = path + username + '.audio'
     filename_converted = filename + '.converted'
     with open(filename, 'wb') as f:
         shutil.copyfileobj(file.file, f)
