@@ -2,6 +2,7 @@ import speech_recognition as sr
 from pydub import AudioSegment
 import shutil
 
+
 def text_from_speech(file, username):
     filename = username + '.audio'
     filename_converted = filename + '.converted'
@@ -13,5 +14,10 @@ def text_from_speech(file, username):
     audio = None
     with speech as source:
         audio = recognizer.record(source)
-    transcription = recognizer.recognize_google(audio, language='en-US', show_all=True)
+    try:
+        transcription = recognizer.recognize_google(audio, language='en-US')
+    except sr.UnknownValueError:
+        transcription = "Error"
+    except sr.RequestError:
+        transcription = "Error"
     return transcription

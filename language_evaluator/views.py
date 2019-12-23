@@ -7,6 +7,7 @@ from django.contrib.auth import login, authenticate, get_user
 from .functions.test_utils import *
 from .functions.speechToText import *
 from .forms import RegisterForm
+from .functions.grading import *
 # Create your views here.
 
 
@@ -133,32 +134,9 @@ def test(request, test_id):
                 elif 'w' in request.POST:
                     # parses written input
                     written_answer = request.POST.__getitem__('w')
-                    written_answer = written_answer.replace('.', '')
-                    written_answer = written_answer.replace(',', '')
-                    written_answer_split = written_answer.split(' ')
-                    hit_count = 0
-                    miss_count = 0
-                    for q_answer in q.answer_set.all():
-                        hit_count = 0
-                        miss_count = 0
-                        q_answer_split = q_answer.answer_text.split(' ')
-                        counter = 0
-                        for word in q_answer_split:
-                            word = word.replace('.', '')
-                            word = word.replace(',', '')
-                            if len(written_answer_split) <= counter:
-                                miss_count += 1
-                            elif written_answer_split[counter] == word:
-                                hit_count += 1
-                            elif word == '<tag>':
-                                hit_count += 1
-                            else:
-                                miss_count += 1
-                            counter += 1
-                        if hit_count > miss_count:
-                            break
+                    result = grade_text(written_answer, q.answer_set.all())
                     states = t.questions_state_list()
-                    if hit_count > miss_count:
+                    if result:
                         states[t.current_question] = states[t.current_question][:-1] + 'T'
                     else:
                         states[t.current_question] = states[t.current_question][:-1] + 'F'
@@ -167,8 +145,18 @@ def test(request, test_id):
                         t.current_question = t.current_question + 1
                     t.save(update_fields=['current_question', 'questions_state'])
                 elif 's' in request.FILES:
-                # parses speech input
+                    # parses speech input
                     transcription = text_from_speech(request.FILES.__getitem__('s'), t.user.username)
+                    result = grade_text(transcription, q.answer_set.all())
+                    states = t.questions_state_list()
+                    if result:
+                        states[t.current_question] = states[t.current_question][:-1] + 'T'
+                    else:
+                        states[t.current_question] = states[t.current_question][:-1] + 'F'
+                    t.questions_state = '-'.join(states)
+                    if t.current_question + 1 < len(t.questions_state_list()):
+                        t.current_question = t.current_question + 1
+                    t.save(update_fields=['current_question', 'questions_state'])
                 elif 'q_picked' in request.POST:
                     t.current_question = request.POST['q_picked']
                     t.save(update_fields=['current_question'])
