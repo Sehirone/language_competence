@@ -3,7 +3,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  <table>
+  <table id="languagesTable">
     <tr>
       <th>Language</th>
       <th>State</th>
@@ -41,10 +41,10 @@
     </tr>
   {% endfor %}
   </table>
-  <button><a href="{% url 'logout' %}">logout</a></button>
+  <button id="logoutButton"><a href="{% url 'logout' %}">logout</a></button>
 
 {% else %}
   <p>You are not logged in</p>
-  <button><a href="{% url 'login' %}">login</a></button>
+  <button id="loginButton"><a href="{% url 'login' %}">login</a></button>
 {% endif %}
 {% endblock %}
